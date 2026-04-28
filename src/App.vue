@@ -28,7 +28,7 @@
         <div class="stat-label">lives</div>
       </div>
       <div class="stat">
-        <div class="stat-value">{{ round > 0 ? round : '—' }}</div>
+        <div class="stat-value">{{ round > 0 ? round : "—" }}</div>
         <div class="stat-label">round</div>
       </div>
     </div>
@@ -36,11 +36,12 @@
     <div class="timer-track">
       <div
         class="timer-bar"
-        :style="{ width: (timerPct * 100) + '%', background: timerBarColor }"
+        :style="{ width: timerPct * 100 + '%', background: timerBarColor }"
       ></div>
     </div>
 
     <Keyboard
+      v-show="!hideKeyboard"
       :target="target"
       :validKeys="validKeys"
       :flashMap="flashMap"
@@ -57,7 +58,9 @@
         v-if="phase === 'playing' || phase === 'paused'"
         class="btn-secondary"
         @click="togglePause"
-      >{{ phase === 'paused' ? 'resume' : 'pause' }}</button>
+      >
+        {{ phase === "paused" ? "resume" : "pause" }}
+      </button>
 
       <label>
         <input type="checkbox" v-model="guideOn" role="switch" />
@@ -65,9 +68,18 @@
       </label>
 
       <label>
+        <input type="checkbox" v-model="hideKeyboard" role="switch" />
+        hide keyboard
+      </label>
+
+      <label>
         <select
           v-model.number="roundMs"
-          style="font-family: inherit; font-size: 0.75rem; padding: 0.3rem 0.5rem;"
+          style="
+            font-family: inherit;
+            font-size: 0.75rem;
+            padding: 0.3rem 0.5rem;
+          "
         >
           <option :value="4000">easy (4s)</option>
           <option :value="2500">normal (2.5s)</option>
@@ -76,42 +88,63 @@
       </label>
     </div>
 
-    <div class="best-badge">{{ best > 0 ? 'best: ' + best : '' }}</div>
+    <div class="best-badge">{{ best > 0 ? "best: " + best : "" }}</div>
   </main>
 </template>
 
 <script setup>
-import { onMounted, onUnmounted } from 'vue'
-import { KEY_POS } from './constants/keyboard'
-import { useGame } from './composables/useGame'
-import Keyboard from './components/Keyboard.vue'
-import GameOverModal from './components/GameOverModal.vue'
+import { onMounted, onUnmounted } from "vue";
+import { KEY_POS } from "./constants/keyboard";
+import { useGame } from "./composables/useGame";
+import Keyboard from "./components/Keyboard.vue";
+import GameOverModal from "./components/GameOverModal.vue";
 
 const {
-  phase, score, streak, lives, round, best, isNewBest,
-  target, validKeys, feedback, roundMs, timerPct, guideOn, flashMap,
-  displayTarget, livesDisplay, timerBarColor,
-  handleInput, startGame, togglePause, cleanup,
-} = useGame()
+  phase,
+  score,
+  streak,
+  lives,
+  round,
+  best,
+  isNewBest,
+  target,
+  validKeys,
+  feedback,
+  roundMs,
+  timerPct,
+  guideOn,
+  hideKeyboard,
+  flashMap,
+  displayTarget,
+  livesDisplay,
+  timerBarColor,
+  handleInput,
+  startGame,
+  togglePause,
+  cleanup,
+} = useGame();
 
 function handleKeydown(e) {
-  if (e.repeat) return
-  const k = e.key.toUpperCase()
+  if (e.repeat) return;
+  const k = e.key.toUpperCase();
 
-  if (k === 'ESCAPE' || k === 'P') {
-    if (phase.value === 'playing' || phase.value === 'paused') {
-      e.preventDefault()
-      togglePause()
+  if (k === "ESCAPE") {
+    if (phase.value === "playing" || phase.value === "paused") {
+      e.preventDefault();
+      togglePause();
     }
-    return
+    return;
   }
 
   if (KEY_POS[k]) {
-    e.preventDefault()
-    handleInput(k)
+    e.preventDefault();
+    handleInput(k);
   }
 }
 
-onMounted(()   => document.addEventListener('keydown', handleKeydown))
-onUnmounted(() => { document.removeEventListener('keydown', handleKeydown); cleanup() })
+onMounted(() => document.addEventListener("keydown", handleKeydown));
+onUnmounted(() => {
+  document.removeEventListener("keydown", handleKeydown);
+  cleanup();
+});
 </script>

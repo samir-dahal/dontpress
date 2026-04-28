@@ -17,6 +17,7 @@ export function useGame()
     const roundMs = ref(2500)
     const timerPct = ref(0)
     const guideOn = ref(false)
+    const hideKeyboard = ref(false)
     const flashMap = ref({})
 
     // elapsed accumulates ms consumed before a pause; frameStart marks the RAF batch origin.
@@ -223,7 +224,7 @@ export function useGame()
                 stopTimer()
             }
             phase.value = 'paused'
-            feedback.value = 'paused — p or esc to resume'
+            feedback.value = 'paused — esc to resume'
 
         } else if (phase.value === 'paused')
         {
@@ -247,7 +248,7 @@ export function useGame()
 
     return {
         phase, score, streak, lives, round, best, isNewBest,
-        target, validKeys, feedback, roundMs, timerPct, guideOn, flashMap,
+        target, validKeys, feedback, roundMs, timerPct, guideOn, hideKeyboard, flashMap,
         displayTarget, livesDisplay, timerBarColor,
         handleInput, startGame, togglePause, cleanup,
     }
