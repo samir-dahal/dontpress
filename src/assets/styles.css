@@ -1,0 +1,274 @@
+:root {
+  --green:    #1D9E75;
+  --red:      #E24B4A;
+  --amber:    #EF9F27;
+  --key-size: min(44px, 8.5vw);
+  --gap:      min(5px, 1vw);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Space Mono', monospace;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+/* ── layout ── */
+
+.game-root {
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.game-title {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--pico-muted-color);
+  margin: 0 0 0.25rem;
+  font-weight: 400;
+}
+
+.target-display {
+  font-size: 7rem;
+  font-weight: 700;
+  line-height: 1;
+  margin: 0;
+  text-align: center;
+  min-height: 7rem;
+  transition: color 0.15s;
+}
+
+.feedback {
+  font-size: 0.8rem;
+  color: var(--pico-muted-color);
+  min-height: 1.2rem;
+  text-align: center;
+  margin: 0.5rem 0 1.5rem;
+  letter-spacing: 0.05em;
+}
+
+/* ── stats ── */
+
+.stats {
+  display: flex;
+  gap: 2.5rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.stat-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--pico-muted-color);
+}
+
+.lives-display {
+  font-size: 0.9rem;
+  letter-spacing: 0.25em;
+}
+
+/* ── timer ── */
+
+.timer-track {
+  width: 100%;
+  max-width: 500px;
+  height: 3px;
+  background: var(--pico-muted-border-color);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.timer-bar {
+  height: 100%;
+  border-radius: 2px;
+  transition: background 0.3s;
+}
+
+/* ── keyboard ── */
+
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  transition: opacity 0.2s;
+}
+
+.keyboard.is-paused {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.kb-row {
+  display: flex;
+  gap: var(--gap);
+}
+
+.key {
+  width: var(--key-size);
+  height: var(--key-size);
+  border-radius: 6px;
+  border: 1px solid var(--pico-muted-border-color);
+  background: var(--pico-card-background-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--pico-color);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.12s, border-color 0.12s, color 0.12s, transform 0.08s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.key:active {
+  transform: scale(0.88);
+}
+
+.key.state-target { background: var(--red);   border-color: var(--red);   color: #fff; }
+.key.state-valid  { background: var(--green); border-color: var(--green); color: #fff; }
+
+@keyframes flash-good {
+  0%, 100% { background: var(--pico-card-background-color); color: var(--pico-color); transform: scale(1); }
+  40%      { background: var(--green); color: #fff; transform: scale(1.1); }
+}
+
+@keyframes flash-bad {
+  0%, 100% { background: var(--pico-card-background-color); color: var(--pico-color); transform: scale(1); }
+  40%      { background: var(--red); color: #fff; transform: scale(1.08); }
+}
+
+.key.state-flash-good { animation: flash-good 0.35s ease; }
+.key.state-flash-bad  { animation: flash-bad  0.35s ease; }
+
+/* ── controls ── */
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.controls label {
+  font-size: 0.75rem;
+  color: var(--pico-muted-color);
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  margin: 0;
+}
+
+button {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  padding: 0.5rem 1.5rem;
+}
+
+.btn-secondary {
+  background: none;
+  border-color: var(--pico-muted-border-color);
+  color: var(--pico-muted-color);
+}
+
+.best-badge {
+  font-size: 0.7rem;
+  color: var(--pico-muted-color);
+  margin-top: 1rem;
+  text-align: center;
+  min-height: 1rem;
+}
+
+/* ── game over modal ── */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal-card {
+  background: var(--pico-card-background-color);
+  border: 1px solid var(--pico-muted-border-color);
+  border-radius: 12px;
+  padding: 2.5rem 3rem;
+  text-align: center;
+  max-width: 300px;
+  width: 90%;
+}
+
+.modal-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 0 0 1.5rem;
+}
+
+.modal-stats {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.modal-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.modal-stat-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--pico-muted-color);
+}
+
+.modal-stat-value {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.new-best-tag {
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-left: 0.5rem;
+}
